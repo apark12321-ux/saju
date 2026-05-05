@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Noto Serif KR", serif;
+  --color-traditional-paper: #f5f2ed;
+  --color-traditional-ink: #1a1a1a;
+  --color-traditional-red: #8b0000;
+  --color-traditional-gold: #c5a059;
+}
+
+@layer base {
+  body {
+    @apply bg-traditional-paper text-traditional-ink font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+.ad-placeholder {
+  @apply bg-gray-200/50 border border-dashed border-gray-400 rounded-lg flex items-center justify-center text-gray-500 text-xs uppercase tracking-widest my-8 overflow-hidden;
+  min-height: 100px;
+}
+
+.markdown-body {
+  @apply leading-relaxed;
+}
+
+.markdown-body h2 {
+  @apply text-xl font-bold mt-6 mb-3 text-traditional-red border-b border-traditional-gold/30 pb-1;
+}
+
+.markdown-body h3 {
+  @apply text-lg font-bold mt-4 mb-2 text-traditional-ink;
+}
+
+.markdown-body p {
+  @apply mb-4;
+}
+
+.markdown-body ul {
+  @apply list-disc list-inside mb-4 space-y-1;
+}
+
+.saju-cell {
+  @apply p-3 border border-traditional-gold/20 text-center flex flex-col items-center justify-center min-w-[80px];
+}
+
+.saju-stem {
+  @apply text-lg font-bold;
+}
+
+.saju-branch {
+  @apply text-2xl font-bold mb-1;
+}
+
+.saju-element {
+  @apply text-xs opacity-70;
+}
+
