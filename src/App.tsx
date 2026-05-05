@@ -58,6 +58,29 @@ export default function App() {
   // For Horoscope Tab
   const [horoscopeOutput, setHoroscopeOutput] = useState('');
 
+  const [loadingMessage, setLoadingMessage] = useState('천기를 읽고 있습니다...');
+
+  const loadingMessages = [
+    '천기를 읽고 있습니다...',
+    '오행의 기운을 분석하는 중입니다...',
+    '사주 팔자의 균형을 맞추고 있습니다...',
+    '당신의 대운을 살피는 중입니다...',
+    'AI가 명리학 비책을 정리하고 있습니다...',
+    '잠시만 기다려 주십시오. 운명의 지도가 그려지고 있습니다.'
+  ];
+
+  useEffect(() => {
+    let interval: any;
+    if (loading) {
+      let idx = 0;
+      interval = setInterval(() => {
+        idx = (idx + 1) % loadingMessages.length;
+        setLoadingMessage(loadingMessages[idx]);
+      }, 2500);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
+
   const handleCalculate = async () => {
     if (!formData.name) {
       alert('이름을 입력해주세요.');
@@ -65,24 +88,28 @@ export default function App() {
     }
     
     setLoading(true);
-    const result = calculateSaju(
-      formData.year,
-      formData.month,
-      formData.day,
-      formData.hour,
-      formData.minute,
-      formData.isLunar
-    );
-    setSajuResult(result);
-    
-    const text = await getSajuInterpretation(result, formData.name, formData.gender === 'male' ? '남성' : '여성');
-    setInterpretation(text || '');
-    setLoading(false);
-    
-    // Smooth scroll to result
-    setTimeout(() => {
-      document.getElementById('result')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    try {
+      const result = calculateSaju(
+        formData.year,
+        formData.month,
+        formData.day,
+        formData.hour,
+        formData.minute,
+        formData.isLunar
+      );
+      setSajuResult(result);
+      
+      const text = await getSajuInterpretation(result, formData.name, formData.gender === 'male' ? '남성' : '여성');
+      setInterpretation(text || '');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+      // Smooth scroll to result
+      setTimeout(() => {
+        document.getElementById('result')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   };
 
   const handleNameReading = async () => {
