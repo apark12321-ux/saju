@@ -1,7 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 import { SajuData } from "../lib/saju";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let genAI: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured. Please set it in the Secrets panel.");
+    }
+    genAI = new GoogleGenAI(apiKey);
+  }
+  return genAI;
+}
 
 export async function getSajuInterpretation(data: SajuData, name: string, gender: string) {
   const prompt = `
@@ -30,14 +41,13 @@ export async function getSajuInterpretation(data: SajuData, name: string, gender
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-    });
-    return response.text;
+    const ai = getAI();
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await model.generateContent(prompt);
+    return response.response.text();
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "운세를 분석하는 중에 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+    return "운세를 분석하는 중에 오류가 발생했습니다. API 키가 설정되어 있는지 확인해주세요.";
   }
 }
 
@@ -55,11 +65,10 @@ export async function getNameReading(name: string, sajuData: SajuData) {
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-    });
-    return response.text;
+    const ai = getAI();
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await model.generateContent(prompt);
+    return response.response.text();
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "이름 감명 중에 오류가 발생했습니다.";
@@ -79,11 +88,10 @@ export async function getDailyHoroscope(zodiac: string) {
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-    });
-    return response.text;
+    const ai = getAI();
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const response = await model.generateContent(prompt);
+    return response.response.text();
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "오늘의 운세를 가져오는 중에 오류가 발생했습니다.";

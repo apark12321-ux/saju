@@ -35,7 +35,8 @@ const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'side
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'saju' | 'naming' | 'horoscope'>('saju');
+  const [activeTab, setActiveTab] = useState<'saju' | 'naming' | 'horoscope' | 'policy'>('saju');
+  const [policyType, setPolicyType] = useState<'privacy' | 'terms'>('privacy');
   const [formData, setFormData] = useState({
     name: '',
     gender: 'male',
@@ -102,12 +103,18 @@ export default function App() {
     setLoading(false);
   };
 
+  const openPolicy = (type: 'privacy' | 'terms') => {
+    setPolicyType(type);
+    setActiveTab('policy');
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="min-h-screen flex flex-col selection:bg-traditional-red/20 selection:text-traditional-red">
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-traditional-paper/80 backdrop-blur-md border-b border-traditional-gold/20">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setActiveTab('saju')}>
             <div className="w-8 h-8 bg-traditional-red rounded-full flex items-center justify-center text-white font-serif font-bold text-lg">
               命
             </div>
@@ -176,6 +183,46 @@ export default function App() {
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
         {/* Hero Banner Ad */}
         <AdPlaceholder type="banner" />
+
+        {activeTab === 'policy' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-traditional-gold/10 markdown-body"
+          >
+            {policyType === 'privacy' ? (
+              <>
+                <h1>개인정보 처리방침</h1>
+                <p>본 사이트('명리 AI')는 사용자의 개인정보를 소중하게 보호합니다.</p>
+                <h2>1. 수집하는 정보</h2>
+                <p>사주 분석을 위해 이름, 성별, 생년월일시 정보를 입력받으나, 이는 분석 즉시 사용되며 별도의 서버 데이터베이스에 사용자를 식별할 수 있는 형태로 저장되지 않습니다.</p>
+                <h2>2. 정보의 이용 목적</h2>
+                <p>수집된 정보는 오직 인공지능을 통한 명리학적 운세 해석 서비스 제공을 위해서만 활용됩니다.</p>
+                <h2>3. 제3자 제공 및 위탁</h2>
+                <p>사용자의 입력값은 운세 해석을 위해 Google Gemini API로 전송될 수 있으나, 이 과정에서 개인을 식별할 수 있는 정보는 포함되지 않도록 관리합니다.</p>
+                <h2>4. 이용자의 권리</h2>
+                <p>이용자는 언제든지 사이트를 이탈함으로써 자신의 데이터 처리를 중단할 권리가 있습니다.</p>
+              </>
+            ) : (
+              <>
+                <h1>이용약관</h1>
+                <p>본 사이트의 서비스 이용과 관련하여 필요한 사항을 규정합니다.</p>
+                <h2>1. 서비스의 목적</h2>
+                <p>본 서비스는 명리학과 AI 기술을 결합하여 정보 및 오락 목적의 운세 분석 결과를 제공합니다.</p>
+                <h2>2. 책임의 한계</h2>
+                <p>본 서비스가 제공하는 결과는 참고용이며, 이용자가 이를 근거로 내린 결정에 대하여 당사는 어떠한 법적 책임도 지지 않습니다. 인생의 중요한 결정은 본인의 판단하에 실행하시기 바랍니다.</p>
+                <h2>3. 서비스 변경 및 중단</h2>
+                <p>당사는 사전 고지 없이 서비스의 일부 또는 전부를 변경하거나 중단할 수 있습니다.</p>
+              </>
+            )}
+            <button 
+              onClick={() => setActiveTab('saju')}
+              className="mt-12 bg-traditional-ink text-white px-8 py-3 rounded-xl font-medium"
+            >
+              홈으로 돌아가기
+            </button>
+          </motion.div>
+        )}
 
         {activeTab === 'saju' && (
           <div className="space-y-12">
@@ -554,13 +601,26 @@ export default function App() {
           <div className="space-y-4">
             <h4 className="text-white font-serif font-bold">Legal</h4>
             <ul className="text-xs space-y-2">
-              <li><a href="#" className="hover:text-white">개인정보 처리방침</a></li>
-              <li><a href="#" className="hover:text-white">이용약관</a></li>
+              <li><button onClick={() => openPolicy('privacy')} className="hover:text-white">개인정보 처리방침</button></li>
+              <li><button onClick={() => openPolicy('terms')} className="hover:text-white">이용약관</button></li>
               <li><a href="#" className="hover:text-white">Contact Us</a></li>
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-zinc-800 text-center text-[10px] uppercase tracking-widest">
+        
+        {/* Additional SEO Content Section */}
+        <div className="max-w-7xl mx-auto mt-16 text-zinc-500 text-[11px] leading-loose border-t border-zinc-800 pt-8">
+          <h5 className="text-zinc-300 font-bold mb-2">명리학과 운세 분석에 대하여</h5>
+          <p>
+            사주팔자(四柱八字)는 사람이 태어난 연(年), 월(月), 일(日), 시(時)의 네 기둥과 그에 따른 여덟 글자를 의미합니다. 
+            이는 단순한 미신이 아닌, 우주와 자연의 변화 원리를 인간의 삶에 대입하여 분석하는 동양 최고의 통계학이자 철학입니다. 
+            명리 AI는 전통적인 자평진전(子平眞詮), 적천수(滴天髓)의 이론을 현대적 인공지능 알고리즘으로 재해석하여 
+            사용자분들께 가장 정교하고 깊이 있는 인생의 지도를 제공하고자 노력합니다. 
+            목(木), 화(火), 토(土), 금(金), 수(水) 오행의 조화와 균형을 통해 당신의 강점을 극대화하고 약점을 보완하는 개운(開運)의 지혜를 얻으시길 바랍니다.
+          </p>
+        </div>
+
+        <div className="max-w-7xl mx-auto mt-8 text-center text-[10px] uppercase tracking-widest">
           © 2026 MYUNGLI AI. ALL RIGHTS RESERVED. POWERED BY GOOGLE GEMINI.
         </div>
       </footer>
