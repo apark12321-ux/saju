@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Calendar, 
@@ -25,32 +25,42 @@ import { GUIDE_POSTS, GuidePost } from './constants/guides';
 
 // Ad Placeholder component
 const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'sidebar' }) => {
-  const height = type === 'banner' ? 'h-24 md:h-28' : type === 'square' ? 'h-64' : 'h-[600px]';
+  const height = type === 'banner' ? 'min-h-[60px]' : type === 'square' ? 'min-h-[250px]' : 'min-h-[600px]';
+  const adRef = useRef<boolean>(false);
   
   useEffect(() => {
-    try {
-      // @ts-ignore
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
-    }
+    if (adRef.current) return;
+    
+    const timer = setTimeout(() => {
+      try {
+        // @ts-ignore
+        const adsbygoogle = window.adsbygoogle || [];
+        const unfilledAds = document.querySelectorAll('ins.adsbygoogle:not([data-adsbygoogle-status="done"])');
+        
+        if (unfilledAds.length > 0) {
+          adsbygoogle.push({});
+          adRef.current = true;
+        }
+      } catch (e) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('AdSense notice:', e);
+        }
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className={`ad-container w-full ${height} my-8 relative flex items-center justify-center bg-zinc-50 border border-zinc-100 rounded shadow-sm overflow-hidden`}>
+    <div className={`ad-container w-full ${height} my-2 relative flex items-center justify-center overflow-hidden border-y border-zinc-50`}>
       <ins className="adsbygoogle"
-           style={{ display: 'block' }}
+           style={{ display: 'block', width: '100%', minWidth: '250px' }}
            data-ad-client="ca-pub-9552509372228899"
-           data-ad-slot="" // User can add specific slot IDs here
+           data-ad-slot="" 
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
-      
-      {/* Fallback visual indicator if ad doesn't load or for preview */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-        <div className="text-center px-4 opacity-40">
-          <p className="text-[10px] font-medium text-zinc-300 tracking-widest mb-1 uppercase">Google AdSense</p>
-          <p className="text-[10px] font-serif italic text-zinc-200">광고가 이곳에 표시됩니다</p>
-        </div>
+      <div className="absolute top-1 right-2 pointer-events-none">
+        <span className="text-[8px] text-zinc-300 font-sans uppercase tracking-tighter">AD</span>
       </div>
     </div>
   );
@@ -972,6 +982,8 @@ export default function App() {
             )}
           </motion.div>
         )}
+
+        <AdPlaceholder type="banner" />
       </main>
 
       <footer className="bg-zinc-900 text-zinc-400 py-12 px-4 mt-20">
