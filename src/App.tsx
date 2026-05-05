@@ -26,11 +26,31 @@ import { GUIDE_POSTS, GuidePost } from './constants/guides';
 // Ad Placeholder component
 const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'sidebar' }) => {
   const height = type === 'banner' ? 'h-24 md:h-28' : type === 'square' ? 'h-64' : 'h-[600px]';
+  
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error('AdSense error:', e);
+    }
+  }, []);
+
   return (
-    <div className={`ad-placeholder w-full ${height} my-8 flex items-center justify-center bg-zinc-100 border border-dashed border-zinc-300 rounded shadow-sm overflow-hidden`}>
-      <div className="text-center px-4">
-        <p className="text-[10px] font-medium text-zinc-400 tracking-widest mb-1">ADVERTISEMENT</p>
-        <p className="text-sm font-serif italic text-zinc-300">구글 애드센스 광고 영역</p>
+    <div className={`ad-container w-full ${height} my-8 relative flex items-center justify-center bg-zinc-50 border border-zinc-100 rounded shadow-sm overflow-hidden`}>
+      <ins className="adsbygoogle"
+           style={{ display: 'block' }}
+           data-ad-client="ca-pub-9552509372228899"
+           data-ad-slot="" // User can add specific slot IDs here
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      
+      {/* Fallback visual indicator if ad doesn't load or for preview */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div className="text-center px-4 opacity-40">
+          <p className="text-[10px] font-medium text-zinc-300 tracking-widest mb-1 uppercase">Google AdSense</p>
+          <p className="text-[10px] font-serif italic text-zinc-200">광고가 이곳에 표시됩니다</p>
+        </div>
       </div>
     </div>
   );
@@ -212,6 +232,8 @@ export default function App() {
     setActiveTab('contact');
     window.scrollTo(0, 0);
   };
+
+  const sortedGuides = [...GUIDE_POSTS].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <div className="min-h-screen flex flex-col selection:bg-traditional-red/20 selection:text-traditional-red">
@@ -866,7 +888,7 @@ export default function App() {
             <div className="md:col-span-2 space-y-8">
               <h3 className="text-xl font-serif font-bold border-l-4 border-traditional-red pl-3">사주 상식 & 가이드</h3>
               <div className="space-y-4">
-                {GUIDE_POSTS.slice(0, 5).map((post) => (
+                {sortedGuides.slice(0, 5).map((post) => (
                   <div 
                     key={post.id} 
                     onClick={() => { setSelectedGuide(post); setActiveTab('guide'); window.scrollTo(0, 0); }}
@@ -903,7 +925,7 @@ export default function App() {
               <div className="space-y-8">
                 <h2 className="text-3xl font-serif font-bold text-center">명리 지식 창고</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {GUIDE_POSTS.map((post) => (
+                  {sortedGuides.map((post) => (
                     <div 
                       key={post.id}
                       onClick={() => { setSelectedGuide(post); window.scrollTo(0, 0); }}
