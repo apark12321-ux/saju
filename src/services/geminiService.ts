@@ -46,7 +46,9 @@ export async function getSajuInterpretation(data: SajuData, name: string, gender
       model: "gemini-3-flash-preview",
       contents: prompt
     });
-    return response.text || "분석 결과를 가져오는 중에 오류가 발생했습니다.";
+    const text = response.text || "분석 결과를 가져오는 중에 오류가 발생했습니다.";
+    // 사용자의 요청에 따라 볼드 처리 기호(**)가 노출되는 문제를 방지하기 위해 정규식으로 제거하거나 정리합니다.
+    return text.replace(/\*\*/g, "");
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "현재 서버 부하가 높습니다. 잠시 후 다시 시도해 주세요.";
@@ -77,7 +79,8 @@ export async function getNameReading(name: string, sajuData: SajuData) {
       model: "gemini-3-flash-preview",
       contents: prompt
     });
-    return response.text || "성명 감명 결과를 가져오지 못했습니다.";
+    const text = response.text || "성명 감명 결과를 가져오지 못했습니다.";
+    return text.replace(/\*\*/g, "");
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "성명 감명 서비스가 잠시 중단되었습니다.";
@@ -103,7 +106,8 @@ export async function getDailyHoroscope(zodiac: string) {
       model: "gemini-3-flash-preview",
       contents: prompt
     });
-    return response.text || "오늘의 운세를 불러올 수 없습니다.";
+    const text = response.text || "오늘의 운세를 불러올 수 없습니다.";
+    return text.replace(/\*\*/g, "");
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "오늘의 운세 서비스 점검 중입니다.";

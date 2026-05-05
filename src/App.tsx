@@ -18,6 +18,7 @@ import {
   Search
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { calculateSaju, SajuData, ELEMENT_COLORS, ELEMENT_NAMES } from './lib/saju';
 import { getSajuInterpretation, getNameReading, getDailyHoroscope } from './services/geminiService';
 import { GUIDE_POSTS, GuidePost } from './constants/guides';
@@ -34,6 +35,75 @@ const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'side
     </div>
   );
 };
+
+const LoadingOverlay = ({ message }: { message: string }) => (
+  <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-traditional-paper p-6 overflow-hidden"
+  >
+    <div className="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center select-none overflow-hidden">
+      <div className="text-[400px] font-serif leading-none rotate-12">命</div>
+    </div>
+    
+    <div className="relative mb-12">
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        className="w-48 h-48 rounded-full border border-dashed border-traditional-gold/40 flex items-center justify-center"
+      >
+        <motion.div 
+          animate={{ rotate: -360 }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="w-40 h-40 rounded-full border border-dotted border-traditional-red/20"
+        />
+      </motion.div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative">
+          <div className="w-16 h-16 rounded-full border-4 border-traditional-red/10 border-t-traditional-red animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center font-serif text-3xl font-bold text-traditional-red">命</div>
+        </div>
+      </div>
+    </div>
+    
+    <div className="h-20 flex items-center justify-center">
+      <AnimatePresence mode="wait">
+        <motion.p 
+          key={message}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.05 }}
+          transition={{ duration: 0.5 }}
+          className="text-2xl font-serif text-traditional-ink text-center font-medium"
+        >
+          {message}
+        </motion.p>
+      </AnimatePresence>
+    </div>
+    
+    <div className="mt-12 w-64 h-1.5 bg-zinc-200 rounded-full overflow-hidden shadow-inner relative">
+      <motion.div 
+        initial={{ width: "0%" }}
+        animate={{ width: "90%" }}
+        transition={{ duration: 15, ease: "easeOut" }}
+        className="h-full bg-traditional-red shadow-[0_0_10px_rgba(139,0,0,0.5)]"
+      />
+    </div>
+    
+    <p className="mt-4 text-xs font-mono text-zinc-400 uppercase tracking-[0.2em] animate-pulse">
+      AI Engine Analyzing Destiny...
+    </p>
+    
+    <div className="absolute bottom-12 left-0 right-0 px-8 text-center">
+      <div className="max-w-md mx-auto p-4 bg-traditional-gold/5 rounded-2xl border border-traditional-gold/10">
+        <p className="text-[11px] leading-relaxed text-zinc-500 italic">
+          "사주는 정해진 결론이 아닌 당신 삶의 지도입니다. AI가 그 길을 세밀하게 읽어내고 있습니다."
+        </p>
+      </div>
+    </div>
+  </motion.div>
+);
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'saju' | 'naming' | 'horoscope' | 'policy' | 'contact' | 'guide'>('saju');
@@ -147,68 +217,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col selection:bg-traditional-red/20 selection:text-traditional-red">
       {/* Loading Overlay */}
       <AnimatePresence>
-        {loading && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-traditional-paper flex flex-col items-center justify-center p-6"
-          >
-            <div className="relative w-48 h-48 mb-8">
-              {/* Spinning traditional pattern */}
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 border-4 border-dashed border-traditional-gold/30 rounded-full"
-              />
-              <motion.div 
-                animate={{ rotate: -360 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-4 border-2 border-traditional-red/20 rounded-full"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 bg-traditional-red rounded-full flex items-center justify-center text-white font-serif text-3xl shadow-xl shadow-traditional-red/20">
-                  運
-                </div>
-              </div>
-              {/* Small floating particles */}
-              {[...Array(8)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    y: [0, -20, 0],
-                    opacity: [0.2, 0.5, 0.2]
-                  }}
-                  transition={{ 
-                    duration: 2 + Math.random() * 2, 
-                    repeat: Infinity,
-                    delay: i * 0.5
-                  }}
-                  className="absolute w-2 h-2 bg-traditional-gold rounded-full"
-                  style={{ 
-                    left: `${50 + Math.cos(i * Math.PI / 4) * 60}%`,
-                    top: `${50 + Math.sin(i * Math.PI / 4) * 60}%`
-                  }}
-                />
-              ))}
-            </div>
-            
-            <div className="text-center max-w-md">
-              <h3 className="text-2xl font-serif font-bold text-traditional-ink mb-2">당신의 운명을 분석 중입니다</h3>
-              <p className="text-traditional-red font-medium italic min-h-[1.5rem]">{loadingMessage}</p>
-            </div>
-
-            {/* In-loading Ad - High visibility */}
-            <div className="mt-12 w-full max-w-lg">
-              <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-center">
-                <p className="text-[10px] text-zinc-400 tracking-widest mb-3 uppercase font-bold">Waiting for your destiny</p>
-                <div className="ad-placeholder h-64 bg-white border-dashed border-zinc-300 flex items-center justify-center">
-                  <p className="text-sm font-serif italic text-zinc-400">분석 대기 중 광고</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
+        {loading && <LoadingOverlay message={loadingMessage} />}
       </AnimatePresence>
 
       {/* Navigation */}
@@ -644,7 +653,7 @@ export default function App() {
                       </div>
                     ) : (
                       <div className="markdown-body text-zinc-700">
-                        <ReactMarkdown>{interpretation}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{interpretation}</ReactMarkdown>
                       </div>
                     )}
 
@@ -710,7 +719,7 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 markdown-body"
               >
-                <ReactMarkdown>{horoscopeOutput}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{horoscopeOutput}</ReactMarkdown>
                 <AdPlaceholder type="square" />
               </motion.div>
             )}
@@ -718,139 +727,132 @@ export default function App() {
         )}
 
         {activeTab === 'naming' && (
-          <div className="space-y-8 max-w-4xl mx-auto">
-            <h2 className="text-3xl font-serif font-bold text-center mb-8">성명학 감명 (이름 풀이)</h2>
-            
-            {!sajuResult ? (
-              <div className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 space-y-6">
-                <div className="p-4 bg-traditional-paper rounded-xl border-l-4 border-traditional-red text-sm text-zinc-600 mb-6">
-                  성명학은 타고난 사주와 이름의 조화를 분석하는 학문입니다. <br/>
-                  <strong>정확한 분석을 위해 먼저 생년월시와 분석할 이름을 입력해주세요.</strong>
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-serif font-bold text-traditional-ink">성명학 이름 감명</h2>
+              <p className="text-zinc-500">당신의 이름에 담긴 기운과 사주와의 조화를 인공지능이 분석해 드립니다.</p>
+            </div>
+
+            <div className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 space-y-6">
+              <div className="p-4 bg-traditional-paper rounded-xl border-l-4 border-traditional-red text-sm text-zinc-600 mb-6">
+                정확한 성명 감명을 위해서는 타고난 사주 정보가 필수입니다. <br/>
+                <strong>성함과 함께 생년월일시를 정확히 입력해 주세요.</strong>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">분석할 성함</label>
+                  <input 
+                    type="text" 
+                    placeholder="이름을 입력하세요"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full px-6 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none focus:ring-2 focus:ring-traditional-red/20 text-lg transition-all"
+                  />
                 </div>
-                
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">성별</label>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setFormData({...formData, gender: 'male'})}
+                      className={`flex-1 py-4 rounded-2xl border transition-all font-medium ${formData.gender === 'male' ? 'bg-traditional-red text-white border-traditional-red' : 'bg-zinc-50 text-zinc-500 border-traditional-gold/20 hover:border-traditional-gold'}`}
+                    >
+                      남성
+                    </button>
+                    <button 
+                      onClick={() => setFormData({...formData, gender: 'female'})}
+                      className={`flex-1 py-4 rounded-2xl border transition-all font-medium ${formData.gender === 'female' ? 'bg-traditional-red text-white border-traditional-red' : 'bg-zinc-50 text-zinc-500 border-traditional-gold/20 hover:border-traditional-gold'}`}
+                    >
+                      여성
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-6 border-t border-zinc-50">
+                <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">태어난 정보 (사주 연계)</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-zinc-600">감명받을 성함</label>
-                    <input 
-                      type="text" 
-                      placeholder="분석할 이름을 입력하세요"
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-traditional-gold/20 focus:outline-none focus:ring-2 focus:ring-traditional-red/20 text-lg"
-                    />
+                  <div className="grid grid-cols-3 gap-2">
+                    <select 
+                      value={formData.year}
+                      onChange={(e) => setFormData({...formData, year: Number(e.target.value)})}
+                      className="px-4 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none bg-zinc-50 transition-all focus:bg-white"
+                    >
+                      {Array.from({length: 100}, (_, i) => 2025 - i).map(y => <option key={y} value={y}>{y}년</option>)}
+                    </select>
+                    <select 
+                      value={formData.month}
+                      onChange={(e) => setFormData({...formData, month: Number(e.target.value)})}
+                      className="px-4 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none bg-zinc-50 transition-all focus:bg-white"
+                    >
+                      {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m}월</option>)}
+                    </select>
+                    <select 
+                      value={formData.day}
+                      onChange={(e) => setFormData({...formData, day: Number(e.target.value)})}
+                      className="px-4 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none bg-zinc-50 transition-all focus:bg-white"
+                    >
+                      {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}일</option>)}
+                    </select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-zinc-600">성별</label>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => setFormData({...formData, gender: 'male'})}
-                        className={`flex-1 py-3 rounded-xl border transition-all text-sm font-medium ${formData.gender === 'male' ? 'bg-traditional-red text-white border-traditional-red' : 'bg-zinc-50 text-zinc-500 border-traditional-gold/20'}`}
-                      >
-                        남성
-                      </button>
-                      <button 
-                        onClick={() => setFormData({...formData, gender: 'female'})}
-                        className={`flex-1 py-3 rounded-xl border transition-all text-sm font-medium ${formData.gender === 'female' ? 'bg-traditional-red text-white border-traditional-red' : 'bg-zinc-50 text-zinc-500 border-traditional-gold/20'}`}
-                      >
-                        여성
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-zinc-600">생년월일</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      <select 
-                        value={formData.year}
-                        onChange={(e) => setFormData({...formData, year: Number(e.target.value)})}
-                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
-                      >
-                        {Array.from({length: 100}, (_, i) => 2025 - i).map(y => <option key={y} value={y}>{y}년</option>)}
-                      </select>
-                      <select 
-                        value={formData.month}
-                        onChange={(e) => setFormData({...formData, month: Number(e.target.value)})}
-                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
-                      >
-                        {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m}월</option>)}
-                      </select>
-                      <select 
-                        value={formData.day}
-                        onChange={(e) => setFormData({...formData, day: Number(e.target.value)})}
-                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
-                      >
-                        {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}일</option>)}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-zinc-600">태어난 시각</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <select 
-                        value={formData.hour}
-                        onChange={(e) => setFormData({...formData, hour: Number(e.target.value)})}
-                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
-                      >
-                        {Array.from({length: 24}, (_, i) => i).map(h => <option key={h} value={h}>{h}시</option>)}
-                      </select>
-                      <select 
-                        value={formData.minute}
-                        onChange={(e) => setFormData({...formData, minute: Number(e.target.value)})}
-                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
-                      >
-                        {Array.from({length: 60}, (_, i) => i).map(m => <option key={m} value={m}>{m}분</option>)}
-                      </select>
-                    </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <select 
+                      value={formData.hour}
+                      onChange={(e) => setFormData({...formData, hour: Number(e.target.value)})}
+                      className="px-4 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none bg-zinc-50 transition-all focus:bg-white"
+                    >
+                      {Array.from({length: 24}, (_, i) => i).map(h => <option key={h} value={h}>{h}시</option>)}
+                    </select>
+                    <select 
+                      value={formData.minute}
+                      onChange={(e) => setFormData({...formData, minute: Number(e.target.value)})}
+                      className="px-4 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none bg-zinc-50 transition-all focus:bg-white"
+                    >
+                      {Array.from({length: 60}, (_, i) => i).map(m => <option key={m} value={m}>{m}분</option>)}
+                    </select>
                   </div>
                 </div>
-
-                <button 
-                  onClick={async () => {
-                    if (!formData.name) { alert('이름을 입력해주세요.'); return; }
-                    setLoading(true);
-                    const result = calculateSaju(formData.year, formData.month, formData.day, formData.hour, formData.minute, formData.isLunar);
-                    setSajuResult(result);
-                    const text = await getNameReading(formData.name, result);
-                    setNamingOutput(text || '');
-                    setLoading(false);
-                  }}
-                  className="w-full bg-traditional-red text-white py-4 rounded-xl font-serif font-bold hover:shadow-xl transition-all"
-                >
-                  사주와 이름 조화 분석하기
-                </button>
-              </div>
-            ) : (
-              <div className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 space-y-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1 space-y-2">
-                    <label className="text-xs font-bold text-zinc-400">분석할 이름</label>
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer group">
                     <input 
-                      type="text" 
-                      placeholder="감명받을 이름"
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full px-6 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none text-lg"
+                      type="checkbox" 
+                      checked={formData.isLunar} 
+                      onChange={(e) => setFormData({...formData, isLunar: e.target.checked})} 
+                      className="w-5 h-5 rounded border-traditional-gold/20 accent-traditional-red cursor-pointer"
                     />
-                  </div>
-                  <button 
-                    onClick={handleNameReading}
-                    disabled={loading}
-                    className="self-end bg-traditional-red text-white px-10 py-4 rounded-2xl font-serif font-bold hover:shadow-xl transition-all disabled:opacity-70 flex items-center justify-center gap-2"
-                  >
-                    이름 풀이 시작
-                  </button>
+                    <span className="text-sm text-zinc-500 group-hover:text-traditional-red transition-all">음력(Lunar) 필수 체크</span>
+                  </label>
                 </div>
               </div>
-            )}
+
+              <button 
+                onClick={async () => {
+                  if (!formData.name) { alert('성함을 입력해주세요.'); return; }
+                  setLoading(true);
+                  const result = calculateSaju(formData.year, formData.month, formData.day, formData.hour, formData.minute, formData.isLunar);
+                  setSajuResult(result);
+                  const text = await getNameReading(formData.name, result);
+                  setNamingOutput(text || '');
+                  setLoading(false);
+                  setTimeout(() => {
+                    document.getElementById('naming-result')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 150);
+                }}
+                disabled={loading}
+                className="w-full bg-traditional-red text-white py-5 rounded-2xl font-serif font-bold hover:shadow-xl transition-all flex items-center justify-center gap-2 text-xl shadow-lg shadow-traditional-red/20 disabled:opacity-70"
+              >
+                {loading ? <RefreshCw className="animate-spin" size={24} /> : <>이름 분석 및 사주 조화 확인 <ChevronRight size={24} /></>}
+              </button>
+            </div>
 
             {namingOutput && (
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                id="naming-result"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-traditional-gold/10 markdown-body"
               >
-                <ReactMarkdown>{namingOutput}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{namingOutput}</ReactMarkdown>
                 <AdPlaceholder type="banner" />
               </motion.div>
             )}
@@ -933,7 +935,7 @@ export default function App() {
                     <span>분류: {selectedGuide.category === 'saju' ? '사주명리' : selectedGuide.category === 'naming' ? '성명학' : '생활상식'}</span>
                     <span>작성일: {selectedGuide.date}</span>
                   </div>
-                  <ReactMarkdown>{selectedGuide.content}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{selectedGuide.content}</ReactMarkdown>
                 </div>
                 
                 <AdPlaceholder type="banner" />

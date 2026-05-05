@@ -26,23 +26,43 @@
 }
 
 .markdown-body {
-  @apply leading-relaxed;
+  @apply leading-relaxed text-zinc-700;
+}
+
+.markdown-body h1 {
+  @apply text-2xl font-bold mt-8 mb-4 text-traditional-ink;
 }
 
 .markdown-body h2 {
-  @apply text-xl font-bold mt-6 mb-3 text-traditional-red border-b border-traditional-gold/30 pb-1;
+  @apply text-xl font-bold mt-8 mb-4 text-traditional-red border-b border-traditional-gold/30 pb-1;
 }
 
 .markdown-body h3 {
-  @apply text-lg font-bold mt-4 mb-2 text-traditional-ink;
+  @apply text-lg font-bold mt-6 mb-3 text-traditional-ink;
 }
 
 .markdown-body p {
   @apply mb-4;
 }
 
+.markdown-body strong {
+  @apply font-bold text-traditional-ink;
+}
+
+.markdown-body em {
+  @apply italic;
+}
+
 .markdown-body ul {
-  @apply list-disc list-inside mb-4 space-y-1;
+  @apply list-disc list-inside mb-6 space-y-2;
+}
+
+.markdown-body li {
+  @apply ml-4;
+}
+
+.markdown-body li > p {
+  @apply inline;
 }
 
 .saju-cell {
