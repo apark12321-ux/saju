@@ -20,6 +20,7 @@ import {
 import ReactMarkdown from 'react-markdown';
 import { calculateSaju, SajuData, ELEMENT_COLORS, ELEMENT_NAMES } from './lib/saju';
 import { getSajuInterpretation, getNameReading, getDailyHoroscope } from './services/geminiService';
+import { GUIDE_POSTS, GuidePost } from './constants/guides';
 
 // Ad Placeholder component
 const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'sidebar' }) => {
@@ -35,8 +36,9 @@ const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'side
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'saju' | 'naming' | 'horoscope' | 'policy'>('saju');
+  const [activeTab, setActiveTab] = useState<'saju' | 'naming' | 'horoscope' | 'policy' | 'contact' | 'guide'>('saju');
   const [policyType, setPolicyType] = useState<'privacy' | 'terms'>('privacy');
+  const [selectedGuide, setSelectedGuide] = useState<GuidePost | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     gender: 'male',
@@ -133,6 +135,11 @@ export default function App() {
   const openPolicy = (type: 'privacy' | 'terms') => {
     setPolicyType(type);
     setActiveTab('policy');
+    window.scrollTo(0, 0);
+  };
+
+  const openContact = () => {
+    setActiveTab('contact');
     window.scrollTo(0, 0);
   };
 
@@ -234,6 +241,12 @@ export default function App() {
             >
               성명 분석
             </button>
+            <button 
+              onClick={() => { setSelectedGuide(null); setActiveTab('guide'); }}
+              className={`text-sm font-medium transition-colors ${activeTab === 'guide' ? 'text-traditional-red border-b-2 border-traditional-red pb-1' : 'text-zinc-500 hover:text-traditional-red'}`}
+            >
+              사주 가이드
+            </button>
           </nav>
 
           <button className="md:hidden p-2 text-zinc-600" onClick={() => setShowNav(!showNav)}>
@@ -276,6 +289,47 @@ export default function App() {
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
         {/* Hero Banner Ad */}
         <AdPlaceholder type="banner" />
+
+        {activeTab === 'contact' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-traditional-gold/10 markdown-body"
+          >
+            <h1>문의하기</h1>
+            <p>궁금하신 점이나 제안 사항이 있으시면 아래 이메일로 연락 주세요. 영업일 기준 1~3일 내에 답변 드립니다.</p>
+            
+            <h2>연락처 정보</h2>
+            <p>
+              <a href="mailto:apark12321@gmail.com" className="text-traditional-red font-bold text-lg hover:underline">
+                apark12321@gmail.com
+              </a>
+            </p>
+
+            <h2>문의 가능한 내용</h2>
+            <ul>
+              <li>운세 분석 결과에 대한 질문</li>
+              <li>사이트 사용 중 발생하는 오류 신고</li>
+              <li>오타 또는 잘못된 정보 제보</li>
+              <li>광고 또는 협업 제안</li>
+              <li>기타 사이트 관련 문의</li>
+            </ul>
+
+            <h2>자주 묻는 질문</h2>
+            <h3>모든 서비스가 정말 무료인가요?</h3>
+            <p>네, 명리 AI의 모든 사주 분석, 오늘의 운세, 성명 감명 서비스는 완전 무료입니다. 회원가입도 필요하지 않으며, 결제 정보를 요구하지 않습니다. 사이트는 광고 수익(Google AdSense)으로 운영됩니다.</p>
+
+            <h3>분석 결과가 얼마나 정확한가요?</h3>
+            <p>본 서비스는 정통 명리학 이론을 충실히 반영하고 있으며, 최신 AI 기술을 통해 이를 현대적으로 해석합니다. 다만, 운세는 삶의 참고 지표일 뿐이며 절대적인 결과는 아닙니다.</p>
+
+            <button 
+              onClick={() => setActiveTab('saju')}
+              className="mt-12 bg-traditional-ink text-white px-8 py-3 rounded-xl font-medium"
+            >
+              홈으로 돌아가기
+            </button>
+          </motion.div>
+        )}
 
         {activeTab === 'policy' && (
           <motion.div 
@@ -804,29 +858,96 @@ export default function App() {
         )}
 
         {/* Square Ad for some layout variation */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-          <div className="md:col-span-2 space-y-8">
-            <h3 className="text-xl font-serif font-bold border-l-4 border-traditional-red pl-3">사주 상식 & 가이드</h3>
-            <div className="space-y-4">
-              {[
-                { title: '사주에서 오행이 중요한 이유', desc: '목, 화, 토, 금, 수의 균형이 인생의 안정을 결정합니다.' },
-                { title: '좋은 이름을 짓기 위한 필수 조건', desc: '소리 오행과 자명 오행의 조화가 핵심입니다.' },
-                { title: '용신과 기신: 나에게 도움이 되는 기운', desc: '나의 사주에서 가장 필요한 글자를 찾는 법을 알아봅니다.' }
-              ].map((item, i) => (
-                <div key={i} className="p-4 bg-zinc-50 rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer group flex justify-between items-center">
-                  <div>
-                    <h4 className="font-semibold text-zinc-700 mb-1 group-hover:text-traditional-red transition-all">{item.title}</h4>
-                    <p className="text-xs text-zinc-400">{item.desc}</p>
+        {/* Only show this preview on the home/saju tab when no specific guide is selected */}
+        {activeTab === 'saju' && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            <div className="md:col-span-2 space-y-8">
+              <h3 className="text-xl font-serif font-bold border-l-4 border-traditional-red pl-3">사주 상식 & 가이드</h3>
+              <div className="space-y-4">
+                {GUIDE_POSTS.slice(0, 5).map((post) => (
+                  <div 
+                    key={post.id} 
+                    onClick={() => { setSelectedGuide(post); setActiveTab('guide'); window.scrollTo(0, 0); }}
+                    className="p-4 bg-zinc-50 rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer group flex justify-between items-center border border-zinc-100 hover:border-traditional-gold/30"
+                  >
+                    <div>
+                      <h4 className="font-semibold text-zinc-700 mb-1 group-hover:text-traditional-red transition-all">{post.title}</h4>
+                      <p className="text-xs text-zinc-400">{post.excerpt}</p>
+                    </div>
+                    <ChevronRight size={16} className="text-zinc-300 group-hover:text-traditional-red group-hover:translate-x-1 transition-all" />
                   </div>
-                  <ChevronRight size={16} className="text-zinc-300" />
-                </div>
-              ))}
+                ))}
+                <button 
+                  onClick={() => { setSelectedGuide(null); setActiveTab('guide'); window.scrollTo(0, 0); }}
+                  className="w-full py-3 text-sm font-medium text-zinc-500 hover:text-traditional-red transition-colors flex items-center justify-center gap-1"
+                >
+                  전체 가이드 보기 <Search size={14} />
+                </button>
+              </div>
+            </div>
+            <div>
+              <AdPlaceholder type="square" />
             </div>
           </div>
-          <div>
-            <AdPlaceholder type="square" />
-          </div>
-        </div>
+        )}
+
+        {activeTab === 'guide' && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
+            {!selectedGuide ? (
+              <div className="space-y-8">
+                <h2 className="text-3xl font-serif font-bold text-center">명리 지식 창고</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {GUIDE_POSTS.map((post) => (
+                    <div 
+                      key={post.id}
+                      onClick={() => { setSelectedGuide(post); window.scrollTo(0, 0); }}
+                      className="bg-white p-6 rounded-2xl shadow-sm border border-traditional-gold/10 hover:shadow-md transition-all cursor-pointer group"
+                    >
+                      <div className="flex justify-between items-start mb-4">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-traditional-gold bg-traditional-gold/5 px-2 py-1 rounded">
+                          {post.category === 'saju' ? '사주명리' : post.category === 'naming' ? '성명학' : '생활상식'}
+                        </span>
+                        <span className="text-[10px] text-zinc-300 italic font-serif">{post.date}</span>
+                      </div>
+                      <h3 className="text-xl font-serif font-bold mb-3 group-hover:text-traditional-red transition-colors">{post.title}</h3>
+                      <p className="text-sm text-zinc-500 line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-traditional-gold/10">
+                <button 
+                  onClick={() => setSelectedGuide(null)}
+                  className="mb-8 text-zinc-400 hover:text-traditional-red flex items-center gap-1 text-sm transition-colors"
+                >
+                  <X size={16} /> 전체 목록으로
+                </button>
+                <div className="markdown-body">
+                  <h1 className="text-3xl font-serif font-bold text-traditional-ink mb-2">{selectedGuide.title}</h1>
+                  <div className="flex items-center gap-4 text-xs text-zinc-400 mb-8 border-b border-zinc-100 pb-4">
+                    <span>분류: {selectedGuide.category === 'saju' ? '사주명리' : selectedGuide.category === 'naming' ? '성명학' : '생활상식'}</span>
+                    <span>작성일: {selectedGuide.date}</span>
+                  </div>
+                  <ReactMarkdown>{selectedGuide.content}</ReactMarkdown>
+                </div>
+                
+                <AdPlaceholder type="banner" />
+                
+                <button 
+                  onClick={() => { setSelectedGuide(null); setActiveTab('guide'); }}
+                  className="mt-12 bg-traditional-ink text-white px-8 py-3 rounded-xl font-medium hover:bg-traditional-red transition-all shadow-lg"
+                >
+                  다른 가이드 더 읽어보기
+                </button>
+              </div>
+            )}
+          </motion.div>
+        )}
       </main>
 
       <footer className="bg-zinc-900 text-zinc-400 py-12 px-4 mt-20">
@@ -844,9 +965,10 @@ export default function App() {
           <div className="space-y-4">
             <h4 className="text-white font-serif font-bold">주요 메뉴</h4>
             <ul className="text-xs space-y-2">
-              <li><button onClick={() => setActiveTab('saju')} className="hover:text-white">정통 사주 분석</button></li>
-              <li><button onClick={() => setActiveTab('horoscope')} className="hover:text-white">오늘의 띠별 운세</button></li>
-              <li><button onClick={() => setActiveTab('naming')} className="hover:text-white">AI 이름 감명</button></li>
+              <li><button onClick={() => { setActiveTab('saju'); window.scrollTo(0,0); }} className="hover:text-white">정통 사주 분석</button></li>
+              <li><button onClick={() => { setActiveTab('horoscope'); window.scrollTo(0,0); }} className="hover:text-white">오늘의 띠별 운세</button></li>
+              <li><button onClick={() => { setActiveTab('naming'); window.scrollTo(0,0); }} className="hover:text-white">AI 이름 감명</button></li>
+              <li><button onClick={() => { setSelectedGuide(null); setActiveTab('guide'); window.scrollTo(0,0); }} className="hover:text-white">사주 상식 가이드</button></li>
             </ul>
           </div>
           <div className="space-y-4">
@@ -854,7 +976,7 @@ export default function App() {
             <ul className="text-xs space-y-2">
               <li><button onClick={() => openPolicy('privacy')} className="hover:text-white">개인정보 처리방침</button></li>
               <li><button onClick={() => openPolicy('terms')} className="hover:text-white">이용약관</button></li>
-              <li><a href="mailto:apark12321@gmail.com" className="hover:text-white">문의하기 (Contact Us)</a></li>
+              <li><button onClick={openContact} className="hover:text-white">문의하기 (Contact Us)</button></li>
             </ul>
           </div>
         </div>
