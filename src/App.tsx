@@ -111,6 +111,72 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col selection:bg-traditional-red/20 selection:text-traditional-red">
+      {/* Loading Overlay */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-traditional-paper flex flex-col items-center justify-center p-6"
+          >
+            <div className="relative w-48 h-48 mb-8">
+              {/* Spinning traditional pattern */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border-4 border-dashed border-traditional-gold/30 rounded-full"
+              />
+              <motion.div 
+                animate={{ rotate: -360 }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-4 border-2 border-traditional-red/20 rounded-full"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-20 h-20 bg-traditional-red rounded-full flex items-center justify-center text-white font-serif text-3xl shadow-xl shadow-traditional-red/20">
+                  運
+                </div>
+              </div>
+              {/* Small floating particles */}
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ 
+                    y: [0, -20, 0],
+                    opacity: [0.2, 0.5, 0.2]
+                  }}
+                  transition={{ 
+                    duration: 2 + Math.random() * 2, 
+                    repeat: Infinity,
+                    delay: i * 0.5
+                  }}
+                  className="absolute w-2 h-2 bg-traditional-gold rounded-full"
+                  style={{ 
+                    left: `${50 + Math.cos(i * Math.PI / 4) * 60}%`,
+                    top: `${50 + Math.sin(i * Math.PI / 4) * 60}%`
+                  }}
+                />
+              ))}
+            </div>
+            
+            <div className="text-center max-w-md">
+              <h3 className="text-2xl font-serif font-bold text-traditional-ink mb-2">당신의 운명을 분석 중입니다</h3>
+              <p className="text-traditional-red font-medium italic min-h-[1.5rem]">{loadingMessage}</p>
+            </div>
+
+            {/* In-loading Ad - High visibility */}
+            <div className="mt-12 w-full max-w-lg">
+              <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-center">
+                <p className="text-[10px] text-zinc-400 tracking-widest mb-3 uppercase font-bold">Waiting for your destiny</p>
+                <div className="ad-placeholder h-64 bg-white border-dashed border-zinc-300 flex items-center justify-center">
+                  <p className="text-sm font-serif italic text-zinc-400">분석 대기 중 광고</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-traditional-paper/80 backdrop-blur-md border-b border-traditional-gold/20">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
