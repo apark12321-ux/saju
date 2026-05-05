@@ -286,34 +286,90 @@ export default function App() {
             {policyType === 'privacy' ? (
               <>
                 <h1>개인정보 처리방침</h1>
-                <p>본 사이트('명리 AI')는 사용자의 개인정보를 소중하게 보호합니다.</p>
-                <h2>1. 수집하는 정보</h2>
-                <p>사주 분석을 위해 이름, 성별, 생년월일시 정보를 입력받으나, 이는 분석 즉시 사용되며 별도의 서버 데이터베이스에 사용자를 식별할 수 있는 형태로 저장되지 않습니다.</p>
-                <h2>2. 정보의 이용 목적</h2>
-                <p>수집된 정보는 오직 인공지능을 통한 명리학적 운세 해석 서비스 제공을 위해서만 활용됩니다.</p>
-                <h2>3. 제3자 제공 및 위탁</h2>
-                <p>사용자의 입력값은 운세 해석을 위해 Google Gemini API로 전송될 수 있으나, 이 과정에서 개인을 식별할 수 있는 정보는 포함되지 않도록 관리합니다.</p>
-                <h2>4. 이용자의 권리</h2>
-                <p>이용자는 언제든지 사이트를 이탈함으로써 자신의 데이터 처리를 중단할 권리가 있습니다.</p>
+                <p>명리 AI는 사용자의 개인정보를 소중히 다룹니다.</p>
+                
+                <h2>제1조 (개인정보의 처리 목적)</h2>
+                <p>명리 AI(이하 '서비스')는 다음의 목적을 위하여 개인정보를 처리합니다. 처리한 개인정보는 다음의 목적 이외의 용도로는 이용되지 않습니다.</p>
+                <ul>
+                  <li>서비스 제공 및 운영</li>
+                  <li>서비스 개선 및 통계 분석</li>
+                  <li>고객 문의 응대</li>
+                </ul>
+
+                <h2>제2조 (수집하는 개인정보 항목)</h2>
+                <p>본 서비스는 회원가입 없이 이용 가능합니다. 다만 다음과 같은 정보가 자동으로 수집될 수 있습니다.</p>
+                <ul>
+                  <li>접속 IP 정보, 쿠키, 접속 기록, 브라우저 정보</li>
+                  <li>localStorage 기반의 사용자 선택 정보 (사주 입력 데이터 등)</li>
+                </ul>
+
+                <h2>제3조 (개인정보의 보유 및 이용기간)</h2>
+                <p>서비스 이용 통계 분석을 위한 데이터는 익명화되어 1년간 보관됩니다. 사용자가 입력한 사주 정보 등은 사용자의 브라우저에만 저장되거나 분석 즉시 사용되며, 서버에 영구적으로 저장되지 않습니다.</p>
+
+                <h2>제4조 (광고 및 분석 도구)</h2>
+                <p>본 서비스는 다음과 같은 제3자 광고 및 분석 도구를 사용할 수 있습니다.</p>
+                <ul>
+                  <li>Google AdSense - 광고 게재</li>
+                  <li>Google Analytics - 사용자 통계 분석</li>
+                </ul>
+                <p>이러한 도구들은 쿠키를 사용하여 사용자 활동을 분석합니다. 사용자는 브라우저 설정에서 쿠키를 비활성화할 수 있습니다.</p>
+
+                <h2>제5조 (정보주체의 권리)</h2>
+                <p>이용자는 언제든지 개인정보 열람, 정정·삭제, 처리정지 요구 등의 권리를 행사할 수 있습니다.</p>
+
+                <h2>제6조 (개인정보 보호 책임자)</h2>
+                <p>책임 부서: 알고파트너스 개인정보보호 담당<br/>이메일: apark12321@gmail.com</p>
+
+                <h2>제7조 (개정)</h2>
+                <p>본 개인정보 처리방침은 2026년 5월 5일부터 시행됩니다.</p>
               </>
             ) : (
               <>
                 <h1>이용약관</h1>
-                <p>본 사이트의 서비스 이용과 관련하여 필요한 사항을 규정합니다.</p>
-                <h2>1. 서비스의 목적</h2>
-                <p>본 서비스는 명리학과 AI 기술을 결합하여 정보 및 오락 목적의 운세 분석 결과를 제공합니다.</p>
-                <h2>2. 책임의 한계</h2>
-                <p>본 서비스가 제공하는 결과는 참고용이며, 이용자가 이를 근거로 내린 결정에 대하여 당사는 어떠한 법적 책임도 지지 않습니다. 인생의 중요한 결정은 본인의 판단하에 실행하시기 바랍니다.</p>
-                <h2>3. 서비스 변경 및 중단</h2>
-                <p>당사는 사전 고지 없이 서비스의 일부 또는 전부를 변경하거나 중단할 수 있습니다.</p>
+                <p>명리 AI 서지스 이용약관입니다.</p>
+
+                <h2>제1조 (목적)</h2>
+                <p>본 약관은 알고파트너스(이하 '회사')가 제공하는 명리 AI 서비스(이하 '서비스')의 이용 조건 및 절차를 규정함을 목적으로 합니다.</p>
+
+                <h2>제2조 (서비스의 내용)</h2>
+                <p>회사가 제공하는 서비스는 다음과 같습니다.</p>
+                <ul>
+                  <li>AI 기반 사주 및 명리학적 운세 해석</li>
+                  <li>성명학 기반 이름 감명 및 분석</li>
+                  <li>일일 띠별 운세 제공</li>
+                </ul>
+
+                <h2>제3조 (이용료)</h2>
+                <p>본 서비스는 완전 무료로 제공됩니다. 회원가입이나 결제가 필요 없으며, 서비스 운영은 광고 수익으로 충당됩니다.</p>
+
+                <h2>제4조 (이용자의 의무)</h2>
+                <p>이용자는 본인의 명의로 서비스를 이용해야 하며, 타인의 권리를 침해하거나 서비스의 안정적 운영을 방해해서는 안 됩니다.</p>
+
+                <h2>제5조 (저작권)</h2>
+                <p>본 서비스에서 AI가 생성한 해석 결과는 사용자가 자유롭게 활용할 수 있습니다. 다만 결과물의 사용으로 인한 책임은 사용자에게 있습니다.</p>
+
+                <h2>제6조 (면책 조항)</h2>
+                <ul>
+                  <li>회사는 AI 추천 결과의 정확성을 보장하지 않습니다.</li>
+                  <li>운세 결과는 참고용이며, 실제 삶의 성과나 미래를 보장하지 않습니다.</li>
+                  <li>서비스 이용으로 발생한 손해에 대해 회사는 법적 책임을 지지 않습니다.</li>
+                </ul>
+
+                <h2>제7조 (분쟁 해결)</h2>
+                <p>본 약관에 관한 분쟁은 대한민국 법령에 따르며, 회사 본사 소재지 관할 법원에서 해결합니다.</p>
+
+                <h2>부칙</h2>
+                <p>본 약관은 2026년 5월 5일부터 시행됩니다.</p>
               </>
             )}
-            <button 
-              onClick={() => setActiveTab('saju')}
-              className="mt-12 bg-traditional-ink text-white px-8 py-3 rounded-xl font-medium"
-            >
-              홈으로 돌아가기
-            </button>
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setActiveTab('saju')}
+                className="mt-12 bg-traditional-ink text-white px-8 py-3 rounded-xl font-medium"
+              >
+                홈으로 돌아가기
+              </button>
+            </div>
           </motion.div>
         )}
 
@@ -610,27 +666,129 @@ export default function App() {
         {activeTab === 'naming' && (
           <div className="space-y-8 max-w-4xl mx-auto">
             <h2 className="text-3xl font-serif font-bold text-center mb-8">성명학 감명 (이름 풀이)</h2>
-            <div className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 space-y-6">
-              <p className="text-center text-zinc-500 mb-4 font-serif italic">
-                사주 분석 후 감명을 받으시면 더욱 정확한 오행 보완 관계를 분석할 수 있습니다.
-              </p>
-              <div className="flex flex-col md:flex-row gap-4">
-                <input 
-                  type="text" 
-                  placeholder="감명받을 이름을 입력하세요"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="flex-1 px-6 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none focus:ring-2 focus:ring-traditional-red/20 text-lg"
-                />
+            
+            {!sajuResult ? (
+              <div className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 space-y-6">
+                <div className="p-4 bg-traditional-paper rounded-xl border-l-4 border-traditional-red text-sm text-zinc-600 mb-6">
+                  성명학은 타고난 사주와 이름의 조화를 분석하는 학문입니다. <br/>
+                  <strong>정확한 분석을 위해 먼저 생년월시와 분석할 이름을 입력해주세요.</strong>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-zinc-600">감명받을 성함</label>
+                    <input 
+                      type="text" 
+                      placeholder="분석할 이름을 입력하세요"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      className="w-full px-4 py-3 rounded-xl border border-traditional-gold/20 focus:outline-none focus:ring-2 focus:ring-traditional-red/20 text-lg"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-zinc-600">성별</label>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => setFormData({...formData, gender: 'male'})}
+                        className={`flex-1 py-3 rounded-xl border transition-all text-sm font-medium ${formData.gender === 'male' ? 'bg-traditional-red text-white border-traditional-red' : 'bg-zinc-50 text-zinc-500 border-traditional-gold/20'}`}
+                      >
+                        남성
+                      </button>
+                      <button 
+                        onClick={() => setFormData({...formData, gender: 'female'})}
+                        className={`flex-1 py-3 rounded-xl border transition-all text-sm font-medium ${formData.gender === 'female' ? 'bg-traditional-red text-white border-traditional-red' : 'bg-zinc-50 text-zinc-500 border-traditional-gold/20'}`}
+                      >
+                        여성
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-zinc-600">생년월일</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <select 
+                        value={formData.year}
+                        onChange={(e) => setFormData({...formData, year: Number(e.target.value)})}
+                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
+                      >
+                        {Array.from({length: 100}, (_, i) => 2025 - i).map(y => <option key={y} value={y}>{y}년</option>)}
+                      </select>
+                      <select 
+                        value={formData.month}
+                        onChange={(e) => setFormData({...formData, month: Number(e.target.value)})}
+                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
+                      >
+                        {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m}월</option>)}
+                      </select>
+                      <select 
+                        value={formData.day}
+                        onChange={(e) => setFormData({...formData, day: Number(e.target.value)})}
+                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
+                      >
+                        {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}일</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-zinc-600">태어난 시각</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <select 
+                        value={formData.hour}
+                        onChange={(e) => setFormData({...formData, hour: Number(e.target.value)})}
+                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
+                      >
+                        {Array.from({length: 24}, (_, i) => i).map(h => <option key={h} value={h}>{h}시</option>)}
+                      </select>
+                      <select 
+                        value={formData.minute}
+                        onChange={(e) => setFormData({...formData, minute: Number(e.target.value)})}
+                        className="px-2 py-3 rounded-xl border border-traditional-gold/20 text-sm bg-white"
+                      >
+                        {Array.from({length: 60}, (_, i) => i).map(m => <option key={m} value={m}>{m}분</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
                 <button 
-                  onClick={handleNameReading}
-                  disabled={loading}
-                  className="bg-traditional-red text-white px-10 py-4 rounded-2xl font-serif font-bold hover:shadow-xl transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                  onClick={async () => {
+                    if (!formData.name) { alert('이름을 입력해주세요.'); return; }
+                    setLoading(true);
+                    const result = calculateSaju(formData.year, formData.month, formData.day, formData.hour, formData.minute, formData.isLunar);
+                    setSajuResult(result);
+                    const text = await getNameReading(formData.name, result);
+                    setNamingOutput(text || '');
+                    setLoading(false);
+                  }}
+                  className="w-full bg-traditional-red text-white py-4 rounded-xl font-serif font-bold hover:shadow-xl transition-all"
                 >
-                  {loading ? <RefreshCw className="animate-spin" /> : '이름 분석하기'}
+                  사주와 이름 조화 분석하기
                 </button>
               </div>
-            </div>
+            ) : (
+              <div className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 space-y-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1 space-y-2">
+                    <label className="text-xs font-bold text-zinc-400">분석할 이름</label>
+                    <input 
+                      type="text" 
+                      placeholder="감명받을 이름"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      className="w-full px-6 py-4 rounded-2xl border border-traditional-gold/20 focus:outline-none text-lg"
+                    />
+                  </div>
+                  <button 
+                    onClick={handleNameReading}
+                    disabled={loading}
+                    className="self-end bg-traditional-red text-white px-10 py-4 rounded-2xl font-serif font-bold hover:shadow-xl transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                  >
+                    이름 풀이 시작
+                  </button>
+                </div>
+              </div>
+            )}
 
             {namingOutput && (
               <motion.div 
@@ -696,7 +854,7 @@ export default function App() {
             <ul className="text-xs space-y-2">
               <li><button onClick={() => openPolicy('privacy')} className="hover:text-white">개인정보 처리방침</button></li>
               <li><button onClick={() => openPolicy('terms')} className="hover:text-white">이용약관</button></li>
-              <li><a href="#" className="hover:text-white">Contact Us</a></li>
+              <li><a href="mailto:apark12321@gmail.com" className="hover:text-white">문의하기 (Contact Us)</a></li>
             </ul>
           </div>
         </div>

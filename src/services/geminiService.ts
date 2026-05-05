@@ -7,16 +7,19 @@ function getAI() {
   if (!genAI) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error("GEMINI_API_KEY is not configured. Please set it in the Secrets panel.");
+      throw new Error("GEMINI_API_KEY가 설정되지 않았습니다. 사이트 관리자에게 문의하세요.");
     }
-    genAI = new GoogleGenAI(apiKey);
+    genAI = new GoogleGenAI({ apiKey });
   }
   return genAI;
 }
 
+/**
+ * 사주 정보를 바탕으로 심층 해석을 생성합니다.
+ */
 export async function getSajuInterpretation(data: SajuData, name: string, gender: string) {
   const prompt = `
-    당신은 정통 명리학의 대가입니다. 다음 사주 정보를 바탕으로 사용자 '${name}'(${gender})의 인생 운세를 심층적으로 분석해주세요.
+    당신은 30년 경력의 정통 명리학 대가입니다. 다음 사주 팔자 정보를 바탕으로 사용자 '${name}'(${gender})의 인생 운세를 심층적으로 분석해주세요.
     
     [사주 정보]
     - 연주: ${data.yearStem}${data.yearBranch}
@@ -26,74 +29,83 @@ export async function getSajuInterpretation(data: SajuData, name: string, gender
     - 오행 분포: 목(${data.fiveElements.wood}), 화(${data.fiveElements.fire}), 토(${data.fiveElements.earth}), 금(${data.fiveElements.metal}), 수(${data.fiveElements.water})
     - 띠: ${data.zodiac}
     
-    분석은 다음 항목을 포함해야 하며, 마크다운(Markdown) 형식으로 읽기 쉽게 작성해주세요.
-    전통적인 용어와 현대적인 해석을 조화롭게 섞어주세요.
-    구글 애드센스 광고가 들어갈 수 있도록 내용을 풍부하게 작성해야 합니다. (최소 1000자 이상)
+    1. 총평: 전체적으로 흐르는 기운과 가장 중심이 되는 일주의 특징
+    2. 성격 및 인간관계: 타고난 성향, 타인과의 상호작용 방식, 고쳐야 할 점
+    3. 재물 및 성공운: 평생의 재물 복, 성공을 위한 조언
+    4. 직업 및 진로: 사주 오행에 따른 최적의 직업군
+    5. 연애 및 처/자운: 인연의 특징, 배우자 복
+    6. 건강 및 주의사항: 주의해야 할 신체 부위
+    7. 개운법: 운을 여는 법 (색상, 숫자, 방향 등)
     
-    1. 총평: 전체적인 운의 흐름과 기운
-    2. 성격 및 특징: 타고난 성향과 성격의 장단점
-    3. 재물운 및 직업운: 어떤 직업이 어울리며 재물은 어떻게 쌓이는가
-    4. 연애 및 결혼운: 인연의 특징과 시기
-    5. 건강운: 주의해야 할 신체 부위와 생활 습관
-    6. 개운법: 부족한 오행을 보충하거나 운을 좋게 만드는 법 (예: 색상, 방향, 숫자)
-    
-    정중하고 지혜로운 말투로 작성해주세요.
+    마크다운(Markdown) 형식으로 소제목과 리스트를 활용해 1500자 이상 아주 상세하게 작성해주세요.
   `;
 
   try {
     const ai = getAI();
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const response = await model.generateContent(prompt);
-    return response.response.text();
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt
+    });
+    return response.text || "분석 결과를 가져오는 중에 오류가 발생했습니다.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "운세를 분석하는 중에 오류가 발생했습니다. API 키가 설정되어 있는지 확인해주세요.";
+    return "현재 서버 부하가 높습니다. 잠시 후 다시 시도해 주세요.";
   }
 }
 
+/**
+ * 성명학 기반 이름 감명을 수행합니다.
+ */
 export async function getNameReading(name: string, sajuData: SajuData) {
   const prompt = `
-    당신은 성명학 권위자입니다. 성함 '${name}'이(가) 사용자의 사주와 얼마나 잘 어울리는지 분석해주세요.
-    사용자 사주 오행 분포: 목(${sajuData.fiveElements.wood}), 화(${sajuData.fiveElements.fire}), 토(${sajuData.fiveElements.earth}), 금(${sajuData.fiveElements.metal}), 수(${sajuData.fiveElements.water})
+    당신은 성명학(이름풀이) 최고 전문가입니다. 성함 '${name}'이(가) 사용자의 사주 오행과 얼마나 조화를 이루는지 분석해주세요.
     
-    분석 항목:
-    1. 이름의 수리 및 음양 조화
-    2. 사주와의 오행 보완 관계 (사주에 부족한 기운을 이름이 채워주는지)
-    3. 종합 평가 및 추천 (부족하다면 보충하면 좋을 오행 제안)
+    [사주 오행 분포]
+    목(${sajuData.fiveElements.wood}), 화(${sajuData.fiveElements.fire}), 토(${sajuData.fiveElements.earth}), 금(${sajuData.fiveElements.metal}), 수(${sajuData.fiveElements.water})
     
-    마크다운 형식으로 작성해주세요.
+    1. 음양 조화 분석
+    2. 수리 분석 (초년, 청년, 장년, 말년)
+    3. 오행 보완 관계 분석
+    4. 종합 추천 및 행운의 조언
+    
+    마크다운 형식으로 1000자 이상 상세히 작성해주세요.
   `;
 
   try {
     const ai = getAI();
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const response = await model.generateContent(prompt);
-    return response.response.text();
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt
+    });
+    return response.text || "성명 감명 결과를 가져오지 못했습니다.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "이름 감명 중에 오류가 발생했습니다.";
+    return "성명 감명 서비스가 잠시 중단되었습니다.";
   }
 }
 
+/**
+ * 오늘의 띠별 운세를 가져옵니다.
+ */
 export async function getDailyHoroscope(zodiac: string) {
   const prompt = `
-    당신은 오늘의 운세를 알려주는 점성술사입니다. '${zodiac}띠'의 오늘 하루 운세를 구체적으로 분석해주세요.
+    오늘 하루 '${zodiac}띠'의 운세를 정성껏 해석해 주세요.
+    1. 총운과 키워드
+    2. 연애, 금전, 사업 상세운
+    3. 행운의 지표
     
-    포함할 내용:
-    1. 총운 (별점 5개 만점 기준)
-    2. 연애운, 금전운, 사업운
-    3. 오늘의 행운 아이템 (색상, 숫자, 장소)
-    
-    친절하고 긍정적인 말투로 마크다운 형식으로 작성해주세요.
+    친절하고 지혜로운 어조로 마크다운 형식으로 작성해주세요.
   `;
 
   try {
     const ai = getAI();
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const response = await model.generateContent(prompt);
-    return response.response.text();
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt
+    });
+    return response.text || "오늘의 운세를 불러올 수 없습니다.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "오늘의 운세를 가져오는 중에 오류가 발생했습니다.";
+    return "오늘의 운세 서비스 점검 중입니다.";
   }
 }
