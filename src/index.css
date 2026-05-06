@@ -45,6 +45,10 @@
   @apply mb-4;
 }
 
+.markdown-body mark {
+  @apply bg-yellow-200 text-traditional-ink px-1 rounded-sm font-medium;
+}
+
 .markdown-body strong {
   @apply font-bold text-traditional-ink;
 }

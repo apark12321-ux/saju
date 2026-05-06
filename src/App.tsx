@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { calculateSaju, SajuData, ELEMENT_COLORS, ELEMENT_NAMES } from './lib/saju';
 import { getSajuInterpretation, getNameReading, getDailyHoroscope } from './services/geminiService';
 import { GUIDE_POSTS, GuidePost } from './constants/guides';
@@ -668,7 +669,7 @@ export default function App() {
                             <Download size={14} /> 텍스트 다운로드
                           </button>
                         </div>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{interpretation}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{interpretation}</ReactMarkdown>
                       </div>
                     )}
                   </section>
@@ -745,7 +746,7 @@ export default function App() {
                     <Download size={14} /> 텍스트 다운로드
                   </button>
                 </div>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{horoscopeOutput}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{horoscopeOutput}</ReactMarkdown>
               </motion.div>
             )}
           </div>
@@ -891,7 +892,7 @@ export default function App() {
                     <Download size={14} /> 텍스트 다운로드
                   </button>
                 </div>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{namingOutput}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{namingOutput}</ReactMarkdown>
               </motion.div>
             )}
           </div>
