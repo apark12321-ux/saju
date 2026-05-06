@@ -23,49 +23,6 @@ import { calculateSaju, SajuData, ELEMENT_COLORS, ELEMENT_NAMES } from './lib/sa
 import { getSajuInterpretation, getNameReading, getDailyHoroscope } from './services/geminiService';
 import { GUIDE_POSTS, GuidePost } from './constants/guides';
 
-// Ad Placeholder component
-const AdPlaceholder = ({ type = 'banner' }: { type?: 'banner' | 'square' | 'sidebar' }) => {
-  const height = type === 'banner' ? 'min-h-[60px]' : type === 'square' ? 'min-h-[250px]' : 'min-h-[600px]';
-  const adRef = useRef<boolean>(false);
-  
-  useEffect(() => {
-    if (adRef.current) return;
-    
-    const timer = setTimeout(() => {
-      try {
-        // @ts-ignore
-        const adsbygoogle = window.adsbygoogle || [];
-        const unfilledAds = document.querySelectorAll('ins.adsbygoogle:not([data-adsbygoogle-status="done"])');
-        
-        if (unfilledAds.length > 0) {
-          adsbygoogle.push({});
-          adRef.current = true;
-        }
-      } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('AdSense notice:', e);
-        }
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <div className={`ad-container w-full ${height} my-2 relative flex items-center justify-center overflow-hidden border-y border-zinc-50`}>
-      <ins className="adsbygoogle"
-           style={{ display: 'block', width: '100%', minWidth: '250px' }}
-           data-ad-client="ca-pub-9552509372228899"
-           data-ad-slot="" 
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <div className="absolute top-1 right-2 pointer-events-none">
-        <span className="text-[8px] text-zinc-300 font-sans uppercase tracking-tighter">AD</span>
-      </div>
-    </div>
-  );
-};
-
 const LoadingOverlay = ({ message }: { message: string }) => (
   <motion.div 
     initial={{ opacity: 0 }}
@@ -328,9 +285,6 @@ export default function App() {
       </header>
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
-        {/* Hero Banner Ad */}
-        <AdPlaceholder type="banner" />
-
         {activeTab === 'contact' && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -358,7 +312,7 @@ export default function App() {
 
             <h2>자주 묻는 질문</h2>
             <h3>모든 서비스가 정말 무료인가요?</h3>
-            <p>네, 명리 AI의 모든 사주 분석, 오늘의 운세, 성명 감명 서비스는 완전 무료입니다. 회원가입도 필요하지 않으며, 결제 정보를 요구하지 않습니다. 사이트는 광고 수익(Google AdSense)으로 운영됩니다.</p>
+            <p>네, 명리 AI의 모든 사주 분석, 오늘의 운세, 성명 감명 서비스는 완전 무료입니다. 회원가입도 필요하지 않으며, 결제 정보를 요구하지 않습니다. 본 서비스는 개인의 명리학적 통찰을 돕기 위해 제공됩니다.</p>
 
             <h3>분석 결과가 얼마나 정확한가요?</h3>
             <p>본 서비스는 정통 명리학 이론을 충실히 반영하고 있으며, 최신 AI 기술을 통해 이를 현대적으로 해석합니다. 다만, 운세는 삶의 참고 지표일 뿐이며 절대적인 결과는 아닙니다.</p>
@@ -401,10 +355,9 @@ export default function App() {
                 <h2>제3조 (개인정보의 보유 및 이용기간)</h2>
                 <p>서비스 이용 통계 분석을 위한 데이터는 익명화되어 1년간 보관됩니다. 사용자가 입력한 사주 정보 등은 사용자의 브라우저에만 저장되거나 분석 즉시 사용되며, 서버에 영구적으로 저장되지 않습니다.</p>
 
-                <h2>제4조 (광고 및 분석 도구)</h2>
-                <p>본 서비스는 다음과 같은 제3자 광고 및 분석 도구를 사용할 수 있습니다.</p>
+                <h2>제4조 (분석 도구)</h2>
+                <p>본 서비스는 다음과 같은 제3자 분석 도구를 사용할 수 있습니다.</p>
                 <ul>
-                  <li>Google AdSense - 광고 게재</li>
                   <li>Google Analytics - 사용자 통계 분석</li>
                 </ul>
                 <p>이러한 도구들은 쿠키를 사용하여 사용자 활동을 분석합니다. 사용자는 브라우저 설정에서 쿠키를 비활성화할 수 있습니다.</p>
@@ -435,7 +388,7 @@ export default function App() {
                 </ul>
 
                 <h2>제3조 (이용료)</h2>
-                <p>본 서비스는 완전 무료로 제공됩니다. 회원가입이나 결제가 필요 없으며, 서비스 운영은 광고 수익으로 충당됩니다.</p>
+                <p>본 서비스는 완전 무료로 제공됩니다. 회원가입이나 결제가 필요 없으며, 누구나 자유롭게 이용하실 수 있습니다.</p>
 
                 <h2>제4조 (이용자의 의무)</h2>
                 <p>이용자는 본인의 명의로 서비스를 이용해야 하며, 타인의 권리를 침해하거나 서비스의 안정적 운영을 방해해서는 안 됩니다.</p>
@@ -617,9 +570,6 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-8"
                 >
-                  {/* Results Ad */}
-                  <AdPlaceholder type="banner" />
-
                   {/* Saju Pillars Table */}
                   <section className="bg-white rounded-3xl p-6 md:p-10 shadow-lg border border-traditional-gold/10">
                     <h3 className="text-2xl font-serif font-bold text-traditional-ink mb-8 flex items-center gap-2">
@@ -688,9 +638,6 @@ export default function App() {
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{interpretation}</ReactMarkdown>
                       </div>
                     )}
-
-                    {/* Side Sidebar Ad Container */}
-                    <AdPlaceholder type="banner" />
                   </section>
 
                   {/* Recommendation Grid */}
@@ -752,7 +699,6 @@ export default function App() {
                 className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 markdown-body"
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{horoscopeOutput}</ReactMarkdown>
-                <AdPlaceholder type="square" />
               </motion.div>
             )}
           </div>
@@ -885,42 +831,34 @@ export default function App() {
                 className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-traditional-gold/10 markdown-body"
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{namingOutput}</ReactMarkdown>
-                <AdPlaceholder type="banner" />
               </motion.div>
             )}
           </div>
         )}
 
-        {/* Square Ad for some layout variation */}
-        {/* Only show this preview on the home/saju tab when no specific guide is selected */}
         {activeTab === 'saju' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div className="md:col-span-2 space-y-8">
-              <h3 className="text-xl font-serif font-bold border-l-4 border-traditional-red pl-3">사주 상식 & 가이드</h3>
-              <div className="space-y-4">
-                {sortedGuides.slice(0, 5).map((post) => (
-                  <div 
-                    key={post.id} 
-                    onClick={() => { setSelectedGuide(post); setActiveTab('guide'); window.scrollTo(0, 0); }}
-                    className="p-4 bg-zinc-50 rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer group flex justify-between items-center border border-zinc-100 hover:border-traditional-gold/30"
-                  >
-                    <div>
-                      <h4 className="font-semibold text-zinc-700 mb-1 group-hover:text-traditional-red transition-all">{post.title}</h4>
-                      <p className="text-xs text-zinc-400">{post.excerpt}</p>
-                    </div>
-                    <ChevronRight size={16} className="text-zinc-300 group-hover:text-traditional-red group-hover:translate-x-1 transition-all" />
-                  </div>
-                ))}
-                <button 
-                  onClick={() => { setSelectedGuide(null); setActiveTab('guide'); window.scrollTo(0, 0); }}
-                  className="w-full py-3 text-sm font-medium text-zinc-500 hover:text-traditional-red transition-colors flex items-center justify-center gap-1"
+          <div className="mt-12">
+            <h3 className="text-xl font-serif font-bold border-l-4 border-traditional-red pl-3 mb-8">사주 상식 & 가이드</h3>
+            <div className="space-y-4">
+              {sortedGuides.slice(0, 5).map((post) => (
+                <div 
+                  key={post.id} 
+                  onClick={() => { setSelectedGuide(post); setActiveTab('guide'); window.scrollTo(0, 0); }}
+                  className="p-4 bg-zinc-50 rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer group flex justify-between items-center border border-zinc-100 hover:border-traditional-gold/30"
                 >
-                  전체 가이드 보기 <Search size={14} />
-                </button>
-              </div>
-            </div>
-            <div>
-              <AdPlaceholder type="square" />
+                  <div>
+                    <h4 className="font-semibold text-zinc-700 mb-1 group-hover:text-traditional-red transition-all">{post.title}</h4>
+                    <p className="text-xs text-zinc-400">{post.excerpt}</p>
+                  </div>
+                  <ChevronRight size={16} className="text-zinc-300 group-hover:text-traditional-red group-hover:translate-x-1 transition-all" />
+                </div>
+              ))}
+              <button 
+                onClick={() => { setSelectedGuide(null); setActiveTab('guide'); window.scrollTo(0, 0); }}
+                className="w-full py-3 text-sm font-medium text-zinc-500 hover:text-traditional-red transition-colors flex items-center justify-center gap-1"
+              >
+                전체 가이드 보기 <Search size={14} />
+              </button>
             </div>
           </div>
         )}
@@ -970,8 +908,6 @@ export default function App() {
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{selectedGuide.content}</ReactMarkdown>
                 </div>
                 
-                <AdPlaceholder type="banner" />
-                
                 <button 
                   onClick={() => { setSelectedGuide(null); setActiveTab('guide'); }}
                   className="mt-12 bg-traditional-ink text-white px-8 py-3 rounded-xl font-medium hover:bg-traditional-red transition-all shadow-lg"
@@ -983,7 +919,6 @@ export default function App() {
           </motion.div>
         )}
 
-        <AdPlaceholder type="banner" />
       </main>
 
       <footer className="bg-zinc-900 text-zinc-400 py-12 px-4 mt-20">
