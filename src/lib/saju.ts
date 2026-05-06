@@ -46,8 +46,8 @@ export function calculateSaju(
     monthBranch: eightChar.getMonthZhi(),
     dayStem: eightChar.getDayGan(),
     dayBranch: eightChar.getDayZhi(),
-    hourStem: eightChar.getHourGan(),
-    hourBranch: eightChar.getHourZhi(),
+    hourStem: eightChar.getTimeGan(),
+    hourBranch: eightChar.getTimeZhi(),
     fiveElements: {
       wood: 0,
       fire: 0,
@@ -55,7 +55,7 @@ export function calculateSaju(
       metal: 0,
       water: 0
     },
-    zodiac: lunar.getZodiac()
+    zodiac: lunar.getYearShengXiao()
   };
 
   // Simple element calculation (This is a simplified version for UI feedback)
