@@ -25,36 +25,6 @@ import { calculateSaju, SajuData, ELEMENT_COLORS, ELEMENT_NAMES } from './lib/sa
 import { getSajuInterpretation, getNameReading, getDailyHoroscope } from './services/geminiService';
 import { GUIDE_POSTS, GuidePost } from './constants/guides';
 
-// Ad Placeholder component for AdSense approval readiness
-const AdPlaceholder = ({ type = 'banner', className = "" }: { type?: 'banner' | 'square' | 'sidebar', className?: string }) => {
-  const height = type === 'banner' ? 'min-h-[90px]' : type === 'square' ? 'min-h-[250px]' : 'min-h-[600px]';
-  const adRef = useRef<boolean>(false);
-  
-  useEffect(() => {
-    if (adRef.current) return;
-    try {
-      // @ts-ignore
-      const adsbygoogle = window.adsbygoogle || [];
-      adsbygoogle.push({});
-      adRef.current = true;
-    } catch (e) {}
-  }, []);
-
-  return (
-    <div className={`ad-container w-full ${height} my-6 relative flex items-center justify-center overflow-hidden border border-zinc-100 bg-zinc-50/30 rounded-xl ${className}`}>
-      <ins className="adsbygoogle"
-           style={{ display: 'block', width: '100%' }}
-           data-ad-client="ca-pub-9552509372228899"
-           data-ad-slot=""
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <div className="absolute top-1 right-2 pointer-events-none">
-        <span className="text-[10px] text-zinc-300 font-sans uppercase tracking-widest">Advertisement</span>
-      </div>
-    </div>
-  );
-};
-
 const LoadingOverlay = ({ message }: { message: string }) => (
   <motion.div 
     initial={{ opacity: 0 }}
@@ -333,7 +303,6 @@ export default function App() {
       </header>
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
-        <AdPlaceholder type="banner" />
         
         {activeTab === 'contact' && (
           <motion.div 
@@ -405,13 +374,12 @@ export default function App() {
                 <h2>제3조 (개인정보의 보유 및 이용기간)</h2>
                 <p>서비스 이용 통계 분석을 위한 데이터는 익명화되어 1년간 보관됩니다. 사용자가 입력한 사주 정보 등은 사용자의 브라우저에만 저장되거나 분석 즉시 사용되며, 서버에 영구적으로 저장되지 않습니다.</p>
 
-                <h2>제4조 (광고 및 분석 도구)</h2>
-                <p>본 서비스는 원활한 서비스 제공 및 수익 창출을 위해 다음과 같은 제3자 도구를 사용합니다.</p>
+                <h2>제4조 (분석 도구)</h2>
+                <p>본 서비스는 서비스 개선을 위해 다음과 같은 제3자 분석 도구를 사용할 수 있습니다.</p>
                 <ul>
-                  <li><strong>Google AdSense:</strong> 광고 게재를 위해 쿠키를 사용하며, 사용자의 관심사에 맞는 광고를 제공합니다.</li>
-                  <li><strong>Google Analytics:</strong> 사용자 통계 및 서비스 이용 행태를 분석합니다.</li>
+                  <li><strong>Google Analytics:</strong> 사용자 통계 및 서비스 이용 행태를 익명으로 분석하여 더 나은 경험을 제공합니다.</li>
                 </ul>
-                <p>사용자는 브라우저 설정에서 쿠키 수집을 거부할 수 있습니다. 본 서비스는 수익 창출을 위해 구글 애드센스 광고를 게재합니다.</p>
+                <p>사용자는 브라우저 설정에서 쿠키 수집을 거부할 수 있습니다.</p>
 
                 <h2>제5조 (정보주체의 권리)</h2>
                 <p>이용자는 언제든지 개인정보 열람, 정정·삭제, 처리정지 요구 등의 권리를 행사할 수 있습니다.</p>
@@ -701,7 +669,6 @@ export default function App() {
                           </button>
                         </div>
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{interpretation}</ReactMarkdown>
-                        <AdPlaceholder type="banner" className="mt-10" />
                       </div>
                     )}
                   </section>
@@ -779,7 +746,6 @@ export default function App() {
                   </button>
                 </div>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{horoscopeOutput}</ReactMarkdown>
-                <AdPlaceholder type="square" className="mt-8" />
               </motion.div>
             )}
           </div>
@@ -926,7 +892,6 @@ export default function App() {
                   </button>
                 </div>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{namingOutput}</ReactMarkdown>
-                <AdPlaceholder type="banner" className="mt-8" />
               </motion.div>
             )}
           </div>
@@ -1015,7 +980,7 @@ export default function App() {
           </motion.div>
         )}
 
-        <AdPlaceholder type="banner" className="mt-12" />
+        <div className="mt-12" />
       </main>
 
       <footer className="bg-zinc-900 text-zinc-400 py-12 px-4 mt-20">

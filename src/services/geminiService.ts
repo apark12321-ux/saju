@@ -48,17 +48,19 @@ export async function getSajuInterpretation(data: SajuData, name: string, gender
     12. 【대운(大運)의 흐름 & 개운(開運) 솔루션】: 10년 주기 대운의 흐름 변화 분석 및 운빨을 강제로 개방하는 색상, 숫자, 방향, 풍수 인테리어 꿀팁.
 
     마크다운(Markdown) 형식을 사용하여 제목과 리스트를 매우 상세하고 풍부하게 작성해주세요. 
-    내용은 논리적이고 일관적이어야 하며, 가능한 가장 긴 답변을 출력하여 사용자에게 정성이 느껴지게 하세요.
-    볼드(**) 문법은 절대 틀리지 마세요. 텍스트 내에서 **가 그대로 노출되지 않도록 주의하세요.
+    내용은 논리적이고 일관적이어야 하며, 시스템이 허용하는 최대 길이(최소 1만자 이상, 가능하면 2만자 타겟)로 답변하세요.
+    볼드(**) 문법은 단어에 딱 붙여서 사용하고(예: **단어**) 절대 틀리지 마세요. 텍스트 내에서 **가 그대로 노출되지 않도록 문법을 철저히 지키세요.
   `;
 
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro",
+      model: "gemini-3.1-pro-preview",
       contents: prompt
     });
-    return response.text || "분석 결과를 가져오는 중에 오류가 발생했습니다.";
+    const text = response.text || "분석 결과를 가져오는 중에 오류가 발생했습니다.";
+    // Ensure no dangling bold markers or spaces inside bold markers that break rendering
+    return text.replace(/\*\* /g, "**").replace(/ \*\*/g, "**");
   } catch (error) {
     console.error("Gemini API Error:", error);
     return "현재 서버 부하가 높습니다. 잠시 후 다시 시도해 주세요.";
@@ -88,7 +90,7 @@ export async function getNameReading(name: string, sajuData: SajuData) {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro",
+      model: "gemini-3.1-pro-preview",
       contents: prompt
     });
     return response.text || "성명 감명 결과를 가져오지 못했습니다.";
@@ -116,7 +118,7 @@ export async function getDailyHoroscope(zodiac: string) {
   try {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro",
+      model: "gemini-3.1-pro-preview",
       contents: prompt
     });
     return response.text || "오늘의 운세를 불러올 수 없습니다.";
