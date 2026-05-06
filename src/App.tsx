@@ -15,13 +15,45 @@ import {
   Briefcase,
   ShieldCheck,
   RefreshCw,
-  Search
+  Search,
+  Printer,
+  Download
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { calculateSaju, SajuData, ELEMENT_COLORS, ELEMENT_NAMES } from './lib/saju';
 import { getSajuInterpretation, getNameReading, getDailyHoroscope } from './services/geminiService';
 import { GUIDE_POSTS, GuidePost } from './constants/guides';
+
+// Ad Placeholder component for AdSense approval readiness
+const AdPlaceholder = ({ type = 'banner', className = "" }: { type?: 'banner' | 'square' | 'sidebar', className?: string }) => {
+  const height = type === 'banner' ? 'min-h-[90px]' : type === 'square' ? 'min-h-[250px]' : 'min-h-[600px]';
+  const adRef = useRef<boolean>(false);
+  
+  useEffect(() => {
+    if (adRef.current) return;
+    try {
+      // @ts-ignore
+      const adsbygoogle = window.adsbygoogle || [];
+      adsbygoogle.push({});
+      adRef.current = true;
+    } catch (e) {}
+  }, []);
+
+  return (
+    <div className={`ad-container w-full ${height} my-6 relative flex items-center justify-center overflow-hidden border border-zinc-100 bg-zinc-50/30 rounded-xl ${className}`}>
+      <ins className="adsbygoogle"
+           style={{ display: 'block', width: '100%' }}
+           data-ad-client="ca-pub-9552509372228899"
+           data-ad-slot=""
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <div className="absolute top-1 right-2 pointer-events-none">
+        <span className="text-[10px] text-zinc-300 font-sans uppercase tracking-widest">Advertisement</span>
+      </div>
+    </div>
+  );
+};
 
 const LoadingOverlay = ({ message }: { message: string }) => (
   <motion.div 
@@ -116,8 +148,23 @@ export default function App() {
   
   // For Horoscope Tab
   const [horoscopeOutput, setHoroscopeOutput] = useState('');
+  const [selectedZodiac, setSelectedZodiac] = useState('');
 
   const [loadingMessage, setLoadingMessage] = useState('천기를 읽고 있습니다...');
+
+  const downloadResult = (title: string, content: string) => {
+    const element = document.createElement("a");
+    const file = new Blob([content], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${title}_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const printResult = () => {
+    window.print();
+  };
 
   const loadingMessages = [
     '천기를 읽고 있습니다...',
@@ -183,6 +230,7 @@ export default function App() {
   };
 
   const handleHoroscope = async (zodiac: string) => {
+    setSelectedZodiac(zodiac);
     setLoading(true);
     const text = await getDailyHoroscope(zodiac);
     setHoroscopeOutput(text || '');
@@ -285,6 +333,8 @@ export default function App() {
       </header>
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-8">
+        <AdPlaceholder type="banner" />
+        
         {activeTab === 'contact' && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -355,12 +405,13 @@ export default function App() {
                 <h2>제3조 (개인정보의 보유 및 이용기간)</h2>
                 <p>서비스 이용 통계 분석을 위한 데이터는 익명화되어 1년간 보관됩니다. 사용자가 입력한 사주 정보 등은 사용자의 브라우저에만 저장되거나 분석 즉시 사용되며, 서버에 영구적으로 저장되지 않습니다.</p>
 
-                <h2>제4조 (분석 도구)</h2>
-                <p>본 서비스는 다음과 같은 제3자 분석 도구를 사용할 수 있습니다.</p>
+                <h2>제4조 (광고 및 분석 도구)</h2>
+                <p>본 서비스는 원활한 서비스 제공 및 수익 창출을 위해 다음과 같은 제3자 도구를 사용합니다.</p>
                 <ul>
-                  <li>Google Analytics - 사용자 통계 분석</li>
+                  <li><strong>Google AdSense:</strong> 광고 게재를 위해 쿠키를 사용하며, 사용자의 관심사에 맞는 광고를 제공합니다.</li>
+                  <li><strong>Google Analytics:</strong> 사용자 통계 및 서비스 이용 행태를 분석합니다.</li>
                 </ul>
-                <p>이러한 도구들은 쿠키를 사용하여 사용자 활동을 분석합니다. 사용자는 브라우저 설정에서 쿠키를 비활성화할 수 있습니다.</p>
+                <p>사용자는 브라우저 설정에서 쿠키 수집을 거부할 수 있습니다. 본 서비스는 수익 창출을 위해 구글 애드센스 광고를 게재합니다.</p>
 
                 <h2>제5조 (정보주체의 권리)</h2>
                 <p>이용자는 언제든지 개인정보 열람, 정정·삭제, 처리정지 요구 등의 권리를 행사할 수 있습니다.</p>
@@ -635,7 +686,22 @@ export default function App() {
                       </div>
                     ) : (
                       <div className="markdown-body text-zinc-700">
+                        <div className="flex flex-wrap gap-3 mb-8 print:hidden">
+                          <button 
+                            onClick={printResult}
+                            className="bg-zinc-100 text-zinc-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-1.5"
+                          >
+                            <Printer size={14} /> PDF 출력/인쇄
+                          </button>
+                          <button 
+                            onClick={() => downloadResult(`${formData.name}_사주해석`, interpretation)}
+                            className="bg-zinc-100 text-zinc-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-1.5"
+                          >
+                            <Download size={14} /> 텍스트 다운로드
+                          </button>
+                        </div>
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{interpretation}</ReactMarkdown>
+                        <AdPlaceholder type="banner" className="mt-10" />
                       </div>
                     )}
                   </section>
@@ -698,7 +764,22 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 className="bg-white rounded-3xl p-8 shadow-lg border border-traditional-gold/10 markdown-body"
               >
+                <div className="flex flex-wrap gap-3 mb-8 print:hidden">
+                  <button 
+                    onClick={printResult}
+                    className="bg-zinc-100 text-zinc-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-1.5"
+                  >
+                    <Printer size={14} /> PDF 출력하기
+                  </button>
+                  <button 
+                    onClick={() => downloadResult(`${selectedZodiac}띠_오늘의운세`, horoscopeOutput)}
+                    className="bg-zinc-100 text-zinc-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-1.5"
+                  >
+                    <Download size={14} /> 텍스트 다운로드
+                  </button>
+                </div>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{horoscopeOutput}</ReactMarkdown>
+                <AdPlaceholder type="square" className="mt-8" />
               </motion.div>
             )}
           </div>
@@ -830,7 +911,22 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-traditional-gold/10 markdown-body"
               >
+                <div className="flex flex-wrap gap-3 mb-8 print:hidden">
+                  <button 
+                    onClick={printResult}
+                    className="bg-zinc-100 text-zinc-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-1.5"
+                  >
+                    <Printer size={14} /> PDF 출력하기
+                  </button>
+                  <button 
+                    onClick={() => downloadResult(`${formData.name}_성명감명`, namingOutput)}
+                    className="bg-zinc-100 text-zinc-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-zinc-200 transition-colors flex items-center gap-1.5"
+                  >
+                    <Download size={14} /> 텍스트 다운로드
+                  </button>
+                </div>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{namingOutput}</ReactMarkdown>
+                <AdPlaceholder type="banner" className="mt-8" />
               </motion.div>
             )}
           </div>
@@ -919,6 +1015,7 @@ export default function App() {
           </motion.div>
         )}
 
+        <AdPlaceholder type="banner" className="mt-12" />
       </main>
 
       <footer className="bg-zinc-900 text-zinc-400 py-12 px-4 mt-20">
